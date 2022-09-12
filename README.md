@@ -2,7 +2,7 @@
 <br />
 <p align="center">
   <a href="https://blockparty.studio/">
-    <img src="img/logo/logo_text.png" alt="block party" width="80" height="80">
+    <img src="/img/logo/logo_text.png" alt="block party" width="80" height="80">
   </a>
 
   <h3 align="center">Block Party</h3>
