@@ -1,1 +1,6 @@
+analysis_tools/ops/__pycache__/*
 data/
+.DS_Store
+notebooks/local_experiment/*
+notebooks/case_studies/.ipynb_checkpoints/*
+notebooks/.ipynb_checkpoints/*

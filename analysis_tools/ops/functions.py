@@ -3,7 +3,7 @@ from spacy.matcher import PhraseMatcher
 nlp = spacy.load("en_core_web_lg")
 
 
-def get_collection(collection_name):
+def get_collection(collection_name, key_file_path):
     """
     Read in key to mongoDB and return collection
     @param collection_name: specify the collection to call
@@ -12,7 +12,7 @@ def get_collection(collection_name):
     import pymongo
     import os
     import sys
-    path = '/Users/sarah/Documents/keys/'
+    path = f'{key_file_path}'
     os.environ['PATH'] += ':'+path
     with open(f"{path}mongo_key.txt", "r") as f:
         data = f.readlines()
@@ -40,7 +40,7 @@ def entire_db_object(collection_obj):
     return query
 
 
-def filter_db_object(collection_obj, start_db, end_db):
+def filter_db_object(collection_obj, start_db: str, end_db:str):
     """
     Grab all objects in collection that are between specified range
     @param collection_obj: collection object from mongoDB
@@ -48,8 +48,11 @@ def filter_db_object(collection_obj, start_db, end_db):
     @param end_db: the date to end
     @return: database collection object filtered to date
     """
+    from datetime import datetime
+    start_date = datetime.strptime(start_db, '%Y-%m-%d')
+    end_date = datetime.strptime(end_db, '%Y-%m-%d')
     query = collection_obj.find(
-        {"YoutubeMetadata.publishDate": {"$gte": start_db.isoformat(), "$lt": end_db.isoformat()}})
+        {"YoutubeMetadata.publishDate": {"$gte": start_date.isoformat(), "$lt": end_date.isoformat()}})
     return query
 
 
@@ -97,6 +100,7 @@ def analyze_week(start_date=None):
 
 def structure_df(input_db_query):
     import pandas as pd
+    db_id = []
     video_url = []
     author = []
     publish_date = []
@@ -106,7 +110,8 @@ def structure_df(input_db_query):
     word_count_list = []
     length = []
     for id in input_db_query:
-        video_url.append(str(id.get('properties').get('videoURL')))
+        db_id.append("https://blockparty.studio/Archive/?_id=" + str(id.get('_id')))
+        video_url.append("https://www.youtube.com/watch?v=" + str(id.get('properties').get('videoURL')))
         author.append(str(id.get('CommunityBoardInfo').get('normalizedName')))
         publish_date.append(id.get('YoutubeMetadata').get('publishDate'))
         title.append(str(id.get('YoutubeMetadata').get('title')))
@@ -123,14 +128,15 @@ def structure_df(input_db_query):
     
     # make each list into dataframe
     output_df = pd.DataFrame(
-    {'video_url': video_url,
-     'author': author,
-     'publish_date': publish_date,
-     'title': title,
-     'topic': topic,
+    {'meeting_url': db_id,
+     'video_url': video_url,
+     'meeting_author': author,
+     'meeting_publish_date': publish_date,
+     'meeting_title': title,
+     'meeting_topic': topic,
      'fullTranscript': full_transcript,
-     'word_count': word_count_list,
-     'length':length
+     'top_word_count': word_count_list,
+     'meeting_length':length
     })
 
     return output_df
