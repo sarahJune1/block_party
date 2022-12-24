@@ -1,31 +1,7 @@
-import spacy
+"""import spacy
 from spacy.matcher import PhraseMatcher
-nlp = spacy.load("en_core_web_lg")
+nlp = spacy.load("en_core_web_lg")"""
 
-
-def get_collection(collection_name, key_file_path):
-    """
-    Read in key to mongoDB and return collection
-    @param collection_name: specify the collection to call
-    @return: collection object
-    """
-    import pymongo
-    import os
-    import sys
-    path = f'{key_file_path}'
-    os.environ['PATH'] += ':'+path
-    with open(f"{path}mongo_key.txt", "r") as f:
-        data = f.readlines()
-        
-    client_address = data
-    # establish connection to database
-    client = pymongo.MongoClient(client_address)
-    # access the database by making an instance
-    db = client['community-board']
-    # make collection instance
-    collection = db[collection_name]
-
-    return collection
 
 
 def entire_db_object(collection_obj):
@@ -333,4 +309,42 @@ def get_imp(bow,mf,ngram):
     return pd.Series(np.array(matrix.sum(axis=0))[0],index=tfidf.get_feature_names()).sort_values(ascending=False).head(1000)
 
     
-    
+"""
+Location of any function used to query the database
+"""
+
+def get_collection(collection_name, key_file_path):
+    """
+    Read in key to mongoDB and return collection
+    @param collection_name: specify the collection to call
+    @return: collection object
+    """
+    import pymongo
+    import os
+    import sys
+    path = f'{key_file_path}'
+    os.environ['PATH'] += ':'+path
+    with open(f"{path}mongo_key.txt", "r") as f:
+        data = f.readlines()
+        
+    client_address = data
+    # establish connection to database
+    client = pymongo.MongoClient(client_address)
+    # access the database by making an instance
+    db = client['community-board']
+    # make collection instance
+    collection = db[collection_name]
+
+    return collection
+
+
+def filter_db_object_by_str(collection_obj, filter_str: str):
+    """
+    Grab all objects in collection that are between specified range
+    @param collection_obj: collection object from mongoDB
+    @param start_db: initial date to begin
+    @param end_db: the date to end
+    @return: database collection object filtered to date
+    """
+    query = collection_obj.find({"properties.fullTranscript": {"$regex": str}})
+    return query
