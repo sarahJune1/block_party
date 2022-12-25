@@ -1,9 +1,3 @@
-"""import spacy
-from spacy.matcher import PhraseMatcher
-nlp = spacy.load("en_core_web_lg")"""
-
-
-
 def entire_db_object(collection_obj):
     """
     Grab all objects in collection that are between specified range

@@ -1,31 +1,4 @@
-import yaml
 import pandas as pd
-
-
-class Constants:
-    """
-    Reads in yaml file as constants
-    """
-    def __init__(self, config_file):
-        with open(config_file, 'r') as f:
-            self.constants = yaml.safe_load(f)
-
-
-def pass_key(key_path: str):
-        """Access API key and return as client address.
-
-            Returns:
-                String with the API key saved to .txt file
-        """
-        import os
-        path = f'{key_path}'
-        os.environ['PATH'] += ':'+path
-        with open(f"{path}.txt", "r") as f:
-            data = f.readlines()
-
-        client_address = data
-        return client_address
-
 
 def flatten_docs_by_columns(results: object, columns_to_output: list):
     """
@@ -42,6 +15,7 @@ def flatten_docs_by_columns(results: object, columns_to_output: list):
     import numpy as np
     print('Creating dataframe from database query...')
     df = pd.DataFrame(results)
+    print('Dataframe created...')
     cols_to_drop = []
     for i in columns_to_output:
         _key, _value = i.split('.')
@@ -50,6 +24,7 @@ def flatten_docs_by_columns(results: object, columns_to_output: list):
             cols_to_drop.append(_key)
         try:
             df[_value] = df[_key].transform(lambda x: x[_value])
+            print(f'Transformed col {_value}...')
         except ValueError as e:
             print('value: ', _value, 'not found')
     
@@ -68,16 +43,18 @@ class MongoDBFilter:
         self.db = client[db_name]
         self.collection = self.db[collection_name]
 
-    def filter_by_regex(self, field, regex, projection=None):
+    def filter_by_regex(self, field, regex_list: list, projection=None):
         """Filter the collection by a field matching a regular expression.
         
         Args:
             field (str): The field to filter by.
-            regex (str): The regular expression to match.
+            regex_list (list): The regular expression to match.
         
         Returns:
             A cursor containing the matching documents.
         """
+        # convert list into single regex pattern
+        regex = "|".join(regex_list)
         print("searching for:", regex)
         query = {field: {'$regex': regex}}
 
