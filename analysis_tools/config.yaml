@@ -1,0 +1,13 @@
+# defines standard schema
+
+# list of columns to include
+standard_column_list: 
+  - properties.videoURL
+  - CommunityBoardInfo.normalizedName
+  - YoutubeMetadata.publishDate
+  - YoutubeMetadata.title
+  - properties.meetingType
+  - properties.fullTranscript
+  - YoutubeMetadata.lengthSeconds
+  - properties.wordCountFullTranscript
+  - properties.wordCountSummary
