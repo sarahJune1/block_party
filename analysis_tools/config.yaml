@@ -11,3 +11,13 @@ standard_column_list:
   - YoutubeMetadata.lengthSeconds
   - properties.wordCountFullTranscript
   - properties.wordCountSummary
+
+
+# zoning case study terms
+zoning_key_terms:
+- "zoning"
+- "variance"
+- "mih"
+- "inclusionary"
+- "floor area"
+- "far"
