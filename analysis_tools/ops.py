@@ -25,3 +25,30 @@ def pass_key(key_path: str):
 
         client_address = data
         return client_address
+
+
+def counter_dict(input_list):
+    """
+    Input list is made into counter dictionary object
+
+        Returns:
+            counter object
+    """
+    import itertools
+    from collections import Counter
+    counter_object = Counter(list(itertools.chain.from_iterable(input_list)))
+    return counter_object
+
+
+def analyze_by_cb(cb_name, col_extract, df, list_to_remove):
+    subset = df[(df['normalizedName'] == cb_name)]
+    subset_top = counter_dict(subset[subset[col_extract].notna()][col_extract])
+
+    for i in range(len(list_to_remove)):
+    #print(not_areas[i])
+        if list_to_remove[i] in subset_top:
+            print("Removing...")
+            print(list_to_remove[i])
+            del(subset_top[list_to_remove[i]])
+
+    return subset_top

@@ -1,4 +1,4 @@
-# defines standard schema
+# defines standard schema and search terms
 
 # list of columns to include
 standard_column_list: 
@@ -21,3 +21,4 @@ zoning_key_terms:
 - "inclusionary"
 - "floor area"
 - "far"
+- "ami"
